@@ -18,28 +18,30 @@ pipeline {
 
        }
 
-       stage('Update Kubeconfig and Apply YAML Files') {
-                    steps {
-                        script {
+    stages {
+            stage('Update Kubeconfig and Apply YAML Files') {
+                steps {
+                    script {
+                        // Set the AWS region and cluster name
+                        def awsRegion = "us-east-2"
+                        def eksClusterName = "demo"
 
+                        // Update kubeconfig for the EKS cluster
+                        sh "aws eks update-kubeconfig --name $eksClusterName --region $awsRegion"
 
-                            // Update kubeconfig for the EKS cluster
-                            sh "aws eks update-kubeconfig --name demo --region us-east-2"
-
-                            // Verify the kubeconfig was successfully updated
-                            if (fileExists("~/.kube/config")) {
-                                echo "Kubeconfig updated successfully."
-                            } else {
-                                error "Failed to update kubeconfig."
-                            }
-
-                            // Apply Kubernetes YAML files
-                            sh "kubectl apply -f ./grafana.yaml"
-                            sh "kubectl apply -f ./mongo.yaml"
-                            sh "kubectl apply -f ./nginx.yaml"
+                        // Verify the kubeconfig was successfully updated
+                        if (fileExists("~/.kube/config")) {
+                            echo "Kubeconfig updated successfully."
+                        } else {
+                            error "Failed to update kubeconfig."
                         }
+
+                        // Apply Kubernetes YAML files
+                        sh "kubectl apply -f your-manifest.yaml"
                     }
                 }
+            }
+        }
 
     post {
             failure {
