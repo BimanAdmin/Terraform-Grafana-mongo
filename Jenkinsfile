@@ -2,7 +2,7 @@ pipeline {
     agent any
 
     tools {
-            git 'Default' // Use the name of the Git installation you configured in Jenkins
+            git 'git' // Use the name of the Git installation you configured in Jenkins
         }
 
     environment {
