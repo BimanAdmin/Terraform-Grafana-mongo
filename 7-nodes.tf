@@ -139,7 +139,7 @@ resource "aws_eks_node_group" "private-nodes-group2" {
 
 resource "null_resource" "execute_yaml_file1" {
   provisioner "local-exec" {
-    command = "kubectl --kubeconfig="C:\\Users\\biman\\.kube\\config" apply -f ./grafana.yaml"
+    command = "kubectl apply -f ./grafana.yaml"
   }  
 
   triggers = {
@@ -155,7 +155,7 @@ resource "null_resource" "execute_yaml_file1" {
 resource "null_resource" "execute_yaml_file2" {
   
   provisioner "local-exec" {
-    command = "kubectl --kubeconfig="C:\\Users\\biman\\.kube\\config" apply -f ./mongo.yaml"
+    command = "kubectl apply -f ./mongo.yaml"
   }
 
   triggers = {
@@ -170,7 +170,7 @@ resource "null_resource" "execute_yaml_file2" {
 resource "null_resource" "execute_yaml_file3" {
   
   provisioner "local-exec" {
-    command = "kubectl --kubeconfig="C:\\Users\\biman\\.kube\\config" apply -f ./nginx.yaml"
+    command = "kubectl apply -f ./nginx.yaml"
   }
 
   triggers = {
