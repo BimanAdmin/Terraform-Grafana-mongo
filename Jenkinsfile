@@ -10,15 +10,26 @@ pipeline {
             steps {
                 script {
                         sh "terraform init"
-                        sh "terraform destroy -auto-approve"
+                        sh "terraform apply -auto-approve"
                     }
                 }
             }
 
        }
 
-
-
+    post {
+            failure {
+                script {
+                    echo 'The pipeline has failed. Triggering Terraform destroy...'
+                    try {
+                        sh 'terraform destroy -auto-approve'
+                    } catch (Exception e) {
+                        echo 'Failed to run Terraform destroy.'
+                    }
+                }
+            }
+        }
+    }
 }
 
 
