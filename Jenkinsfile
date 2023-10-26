@@ -21,7 +21,7 @@ pipeline {
     stages {
         stage('Update Kubeconfig and Apply YAML Files') {
             steps {
-                    script {
+                script {
                         // Set the AWS region and cluster name
                         def awsRegion = "us-east-2"
                         def eksClusterName = "demo"
