@@ -135,49 +135,4 @@ resource "aws_eks_node_group" "private-nodes-group2" {
 # }
 
 
-# Execute the YAML file for Grafana on EKS cluster
-
-resource "null_resource" "execute_yaml_file1" {
-  provisioner "local-exec" {
-    command = "kubectl apply -f ./grafana.yaml"
-  }
-
-  triggers = {
-    eks_cluster_id = aws_eks_cluster.demo.id
-  }
-
-  depends_on = [aws_eks_cluster.demo, aws_eks_node_group.private-nodes]
-}
-
-
-# Execute the YAML file for Mongo on EKS cluster
-
-resource "null_resource" "execute_yaml_file2" {
-
-  provisioner "local-exec" {
-    command = "kubectl apply -f ./mongo.yaml"
-  }
-
-  triggers = {
-    eks_cluster_id = aws_eks_cluster.demo.id
-  }
-
-  depends_on = [aws_eks_cluster.demo, aws_eks_node_group.private-nodes]
-}
-
-# Execute the YAML file for Nginx on EKS cluster
-
-resource "null_resource" "execute_yaml_file3" {
-
-  provisioner "local-exec" {
-    command = "kubectl apply -f ./nginx.yaml"
-  }
-
-  triggers = {
-    eks_cluster_id = aws_eks_cluster.demo.id
-  }
-
-  depends_on = [aws_eks_cluster.demo, aws_eks_node_group.private-nodes]
-}
-
 
