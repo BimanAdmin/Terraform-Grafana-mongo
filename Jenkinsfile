@@ -12,7 +12,7 @@ pipeline {
                 script {
                         sh "terraform init"
                         sh "terraform apply -auto-approve"
-                        sh "aws eks update-kubeconfig --name demo --region us-east-2"
+
                     }
                 }
             }
