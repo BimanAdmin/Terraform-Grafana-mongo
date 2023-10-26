@@ -3,33 +3,47 @@ pipeline {
     environment {
         AWS_ACCESS_KEY_ID = credentials('AWS_ACCESS_KEY_ID')
         AWS_SECRET_ACCESS_KEY = credentials('AWS_SECRET_ACCESS_KEY')
-        AWS_DEFAULT_REGION = 'us-east-2' // Change to your desired region
-
+        AWS_DEFAULT_REGION = "us-east-1"
     }
     stages {
         stage("Create an EKS Cluster") {
             steps {
                 script {
+                    dir('terraform') {
                         sh "terraform init"
                         sh "terraform apply -auto-approve"
-
                     }
                 }
             }
-
-       }
-
-
-
-    post {
-            failure {
+        }
+        stage("Deploy to EKS") {
+            steps {
                 script {
-                    echo 'The pipeline has failed. Triggering Terraform destroy...'
-                    sh 'terraform destroy -auto-approve'
+                    dir('kubernetes') {
+                        sh "aws eks update-kubeconfig --name demo"
+                        sh "kubectl apply -f grafana.yaml"
+                        sh "kubectl apply -f nginx.yaml"
+                        sh "kubectl apply -f mongo.yaml"
+                    }
                 }
             }
         }
+    }
+
+    post {
+                failure {
+                    script {
+                        echo 'The pipeline has failed. Triggering Terraform destroy...'
+                        sh 'terraform destroy -auto-approve'
+                    }
+                }
+            }
 }
+
+
+
+############
+
 
 
 
