@@ -18,7 +18,7 @@ pipeline {
 
        }
 
-        stage('Update Kubeconfig and Apply YAML Files') {
+       stage('Update Kubeconfig and Apply YAML Files') {
                     steps {
                         script {
 
