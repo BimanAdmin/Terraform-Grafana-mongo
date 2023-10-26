@@ -19,8 +19,8 @@ pipeline {
        }
 
     stages {
-            stage('Update Kubeconfig and Apply YAML Files') {
-                steps {
+        stage('Update Kubeconfig and Apply YAML Files') {
+            steps {
                     script {
                         // Set the AWS region and cluster name
                         def awsRegion = "us-east-2"
