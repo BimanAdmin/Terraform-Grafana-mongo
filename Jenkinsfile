@@ -1,6 +1,10 @@
 pipeline {
     agent any
 
+    tools {
+            git 'Default' // Use the name of the Git installation you configured in Jenkins
+        }
+
     environment {
         AWS_ACCESS_KEY_ID = credentials('AKIAUCTVYSECBZKGGKRU')
         AWS_SECRET_ACCESS_KEY = credentials('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')
