@@ -20,19 +20,19 @@ pipeline {
 
 
         stage("Deploy to Kubernetes") {
-                     steps {
-                       script {
-                               // Apply Kubernetes Grafana YAML
-                               sh "kubectl apply -f ./grafana.yaml --kubeconfig=${KUBECONFIG}"
+            steps {
+                script {
+                      // Apply Kubernetes Grafana YAML
+                      sh "kubectl apply -f ./grafana.yaml --kubeconfig=${KUBECONFIG}"
 
-                               // Apply Kubernetes Mongo YAML
-                               sh "kubectl apply -f ./mongo.yaml --kubeconfig=${KUBECONFIG}"
+                      // Apply Kubernetes Mongo YAML
+                      sh "kubectl apply -f ./mongo.yaml --kubeconfig=${KUBECONFIG}"
 
-                                  // Apply Kubernetes Nginx YAML
-                                  sh "kubectl apply -f ./nginx.yaml --kubeconfig=${KUBECONFIG}"
-                              }
-                          }
-                      }
+                      // Apply Kubernetes Nginx YAML
+                      sh "kubectl apply -f ./nginx.yaml --kubeconfig=${KUBECONFIG}"
+                }
+            }
+        }
 
     post {
             failure {
