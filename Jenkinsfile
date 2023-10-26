@@ -19,12 +19,10 @@ pipeline {
         stage("Deploy to EKS") {
             steps {
                 script {
-                    dir('kubernetes') {
                         sh "aws eks update-kubeconfig --name demo"
                         sh "kubectl apply -f grafana.yaml"
                         sh "kubectl apply -f nginx.yaml"
                         sh "kubectl apply -f mongo.yaml"
-                    }
                 }
             }
         }
