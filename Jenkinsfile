@@ -1,5 +1,38 @@
 pipeline {
     agent any
+    environment {
+        AWS_ACCESS_KEY_ID = credentials('AKIAUCTVYSECBZKGGKRU')
+        AWS_SECRET_ACCESS_KEY = credentials('V2gIg9Zqy85+p1KOs3oGJXQbvzNRVajRzl9r8zun')
+        AWS_DEFAULT_REGION = 'us-east-2' // Change to your desired region
+    }
+    stages {
+        stage("Create an EKS Cluster") {
+            steps {
+                script {
+                    dir('terraform') {
+                        sh "terraform init"
+                        sh "terraform apply -auto-approve"
+                    }
+                }
+            }
+        }
+        stage("Deploy to EKS") {
+            steps {
+                script {
+                    dir('kubernetes') {
+                        sh "aws eks update-kubeconfig --name myapp-eks-cluster"
+                        sh "kubectl apply -f nginx-deployment.yaml"
+                        sh "kubectl apply -f nginx-service.yaml"
+                    }
+                }
+            }
+        }
+    }
+}
+
+##############################################################
+pipeline {
+    agent any
 
     tools {
             git 'git' // Use the name of the Git installation you configured in Jenkins
