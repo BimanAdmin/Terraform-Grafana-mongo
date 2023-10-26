@@ -20,7 +20,7 @@ pipeline {
 
 
 
-       stage('Deploy to Kubernetes') {
+        stage('Deploy to Kubernetes') {
                    steps {
                        script {
                            // Apply Kubernetes Grafana YAML
