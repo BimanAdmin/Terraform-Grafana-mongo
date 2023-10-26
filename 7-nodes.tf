@@ -134,49 +134,78 @@ resource "aws_eks_node_group" "private-nodes-group2" {
 #   }
 # }
 
-
+###############
 # Execute the YAML file for Grafana on EKS cluster
 
-resource "null_resource" "execute_yaml_file1" {
-  provisioner "local-exec" {
-    command = "kubectl apply -f ./grafana.yaml"
-  }  
+#resource "null_resource" "execute_yaml_file1" {
+#  provisioner "local-exec" {
+#    command = "kubectl apply -f ./grafana.yaml"
+#  }
 
-  triggers = {
-    eks_cluster_id = aws_eks_cluster.demo.id
-  }
+#  triggers = {
+#    eks_cluster_id = aws_eks_cluster.demo.id
+#  }
 
-  depends_on = [aws_eks_cluster.demo, aws_eks_node_group.private-nodes]
-}
+#  depends_on = [aws_eks_cluster.demo, aws_eks_node_group.private-nodes]
+#}
 
 
 # Execute the YAML file for Mongo on EKS cluster
 
-resource "null_resource" "execute_yaml_file2" {
+#resource "null_resource" "execute_yaml_file2" {
   
-  provisioner "local-exec" {
-    command = "kubectl apply -f ./mongo.yaml"
-  }
+#  provisioner "local-exec" {
+#    command = "kubectl apply -f ./mongo.yaml"
+#  }
 
-  triggers = {
-    eks_cluster_id = aws_eks_cluster.demo.id
-  }
+#  triggers = {
+#    eks_cluster_id = aws_eks_cluster.demo.id
+#  }
 
-  depends_on = [aws_eks_cluster.demo, aws_eks_node_group.private-nodes]
-}
+#  depends_on = [aws_eks_cluster.demo, aws_eks_node_group.private-nodes]
+#}
 
 # Execute the YAML file for Nginx on EKS cluster
 
-resource "null_resource" "execute_yaml_file3" {
+#resource "null_resource" "execute_yaml_file3" {
   
-  provisioner "local-exec" {
-    command = "kubectl apply -f ./nginx.yaml"
-  }
+#  provisioner "local-exec" {
+#    command = "kubectl apply -f ./nginx.yaml"
+#  }
+
+#  triggers = {
+ #   eks_cluster_id = aws_eks_cluster.demo.id
+#  }
+
+#  depends_on = [aws_eks_cluster.demo, aws_eks_node_group.private-nodes]
+#}
+######################
+
+
+variable "kubeconfig_path" {
+  type    = string
+  default = "C:\\Users\\biman\\.kube\\config"
+}
+
+variable "yaml_files" {
+  type    = list(string)
+  default = ["/grafana.yaml", "/mongo.yaml", "/nginx.yaml"]
+}
+
+provider "kubernetes" {
+  config_path = var.kubeconfig_path
+}
+
+resource "null_resource" "apply_yaml" {
+  count = length(var.yaml_files)
 
   triggers = {
-    eks_cluster_id = aws_eks_cluster.demo.id
+    yaml_file = var.yaml_files[count.index]
   }
 
-  depends_on = [aws_eks_cluster.demo, aws_eks_node_group.private-nodes]
+  provisioner "local-exec" {
+    command = "kubectl apply -f ${var.yaml_files[count.index]} --kubeconfig=${var.kubeconfig_path}"
+  }
 }
+
 
