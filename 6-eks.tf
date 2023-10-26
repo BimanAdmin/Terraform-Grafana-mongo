@@ -35,10 +35,10 @@ resource "aws_eks_cluster" "demo" {
 
   vpc_config {
     subnet_ids = [
-      aws_subnet.private-us-east-1a.id,
-      aws_subnet.private-us-east-1b.id,
-      aws_subnet.public-us-east-1a.id,
-      aws_subnet.public-us-east-1b.id
+      aws_subnet.private-us-east-2a.id,
+      aws_subnet.private-us-east-2b.id,
+      aws_subnet.public-us-east-2a.id,
+      aws_subnet.public-us-east-2b.id
     ]
   }
 
@@ -53,7 +53,7 @@ resource "null_resource" "update_kubeconfig" {
   }
 
   provisioner "local-exec" {
-    command = "aws eks update-kubeconfig --name demo --region us-east-1"
+    command = "aws eks update-kubeconfig --name demo --region us-east-2"
   }
   depends_on = [aws_eks_cluster.demo]
 }
