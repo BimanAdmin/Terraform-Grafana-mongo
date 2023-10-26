@@ -1,5 +1,5 @@
 kind: StorageClass
-apiVersion: client.authentication.k8s.io/v1beta1
+apiVersion: storage.k8s.io/v1
 metadata:
   name: vpro-storage
 provisioner: kubernetes.io/aws-ebs
@@ -12,7 +12,7 @@ volumeBindingMode: Immediate
 
 ---
 kind: PersistentVolume
-apiVersion: client.authentication.k8s.io/v1beta1
+apiVersion: v1
 metadata:
   name: vpro-db-data
   labels:
@@ -28,7 +28,7 @@ spec:
 
 ---
 
-apiVersion: client.authentication.k8s.io/v1beta1
+apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
   name: vpro-db-data
@@ -41,7 +41,7 @@ spec:
       storage: 3Gi
 
 ---
-apiVersion: client.authentication.k8s.io/v1beta1
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: grafana-deployment
@@ -84,7 +84,7 @@ spec:
 
 ---
 
-apiVersion: client.authentication.k8s.io/v1beta1
+apiVersion: v1
 kind: Service
 metadata:
   name: grafana-nlb-service
