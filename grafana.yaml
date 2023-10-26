@@ -1,0 +1,102 @@
+kind: StorageClass
+apiVersion: storage.k8s.io/v1
+metadata:
+  name: vpro-storage
+provisioner: kubernetes.io/aws-ebs
+parameters:
+  type: gp2
+reclaimPolicy: Retain
+mountOptions:
+  - debug
+volumeBindingMode: Immediate
+
+---
+kind: PersistentVolume
+apiVersion: v1
+metadata:
+  name: vpro-db-data
+  labels:
+    type: amazonEBS
+spec:
+  storageClassName: manual
+  capacity:
+    storage: 5Gi
+  accessModes:
+  - ReadWriteOnce
+  hostPath:
+    path: "/mnt/data"
+
+---
+
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: vpro-db-data
+spec:
+  storageClassName: manual
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 3Gi
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: grafana-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: grafana
+  template:
+    metadata:
+      labels:
+        app: grafana
+    spec: 
+      tolerations:
+      - key: "dedicated"
+        operator: "Equal"
+        value: "grafana"
+        effect: "NoSchedule"
+        
+      containers:
+        - name: grafana
+          image: grafana/grafana:latest
+          ports:
+            - containerPort: 3000
+          resources:
+            requests:
+              memory: "128Mi"
+              cpu: "250m"
+            limits:
+              memory: "256Mi"
+              cpu: "500m"
+
+      volumes:
+        - name: vpro-db-data
+          persistentVolumeClaim:
+            claimName: vpro-db-data
+
+          
+
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: grafana-nlb-service
+  annotations:
+    service.beta.kubernetes.io/aws-load-balancer-type: nlb
+spec:
+  type: LoadBalancer
+  selector:
+    app: grafana
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 3000
+
+

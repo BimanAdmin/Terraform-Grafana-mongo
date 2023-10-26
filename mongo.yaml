@@ -1,0 +1,70 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: mongodb-namespace
+---
+
+# mongodb-deployment.yaml
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  namespace: mongodb-namespace
+  name: mongodb-deployment
+  labels:
+    app: mongodb
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: mongodb
+  template:
+    metadata:
+      labels:
+        app: mongodb
+    spec:
+      tolerations:
+      - key: "dedicated"
+        operator: "Equal"
+        value: "mongo"
+        effect: "NoSchedule"
+      containers:
+        - name: mongodb
+          image: mongo
+          ports:
+            - containerPort: 27017
+
+          resources:
+            requests:
+              memory: "128Mi"
+              cpu: "250m"
+            limits:
+              memory: "256Mi"
+              cpu: "500m"
+
+          env:
+            - name: MONGO_INITDB_ROOT_USERNAME
+              value: your_username
+            - name: MONGO_INITDB_ROOT_PASSWORD
+              value: your_password
+            # Add other MongoDB environment variables if needed
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: mongodb-service
+  namespace: mongodb-namespace
+  labels:
+    app: mongodb
+  annotations:
+    service.beta.kubernetes.io/aws-load-balancer-internal: "false"
+    service.beta.kubernetes.io/aws-load-balancer-type: "nlb"
+spec:
+  ports:
+    - name: mongodb
+      port: 27017
+      targetPort: 27017
+      protocol: TCP
+  type: LoadBalancer
+  selector:
+    app: mongodb
