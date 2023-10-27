@@ -17,7 +17,7 @@ pipeline {
         stage("Kubernetes YAML file deployment") {
             steps {
                 script {
-                        sh "aws eks update-kubeconfig --name demo --region us-east-2"
+                        //sh "aws eks update-kubeconfig --name demo --region us-east-2"
                         sh "kubectl apply -f grafana.yaml"
                         sh "kubectl apply -f nginx.yaml"
                         sh "kubectl apply -f mongo.yaml"
