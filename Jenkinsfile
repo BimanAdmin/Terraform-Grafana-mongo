@@ -14,7 +14,7 @@ pipeline {
                     }
                 }
         }
-        stage("Deploy to EKS") {
+        stage("Kubernetes YAML file deployment") {
             steps {
                 script {
                         sh "aws eks update-kubeconfig --name demo --region us-east-2"
